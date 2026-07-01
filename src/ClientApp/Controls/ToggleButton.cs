@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 
 namespace eShop.ClientApp.Controls;
 
@@ -114,9 +114,9 @@ public class ToggleButton : ContentView
 
         if (toggleButton.Animate)
         {
-            await toggleButton.ScaleTo(0.9, 50, Easing.Linear);
+            await toggleButton.ScaleToAsync(0.9, 50, Easing.Linear);
             await Task.Delay(100);
-            await toggleButton.ScaleTo(1, 50, Easing.Linear);
+            await toggleButton.ScaleToAsync(1, 50, Easing.Linear);
         }
     }
 }

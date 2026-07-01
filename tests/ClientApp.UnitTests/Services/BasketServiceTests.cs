@@ -1,4 +1,4 @@
-﻿namespace ClientApp.UnitTests.Services;
+namespace ClientApp.UnitTests.Services;
 
 [TestClass]
 public class BasketServiceTests
@@ -8,6 +8,6 @@ public class BasketServiceTests
     {
         var catalogMockService = new CatalogMockService();
         var result = await catalogMockService.GetCatalogAsync();
-        Assert.AreNotEqual(0, result.Count());
+        Assert.IsNotEmpty(result);
     }
 }

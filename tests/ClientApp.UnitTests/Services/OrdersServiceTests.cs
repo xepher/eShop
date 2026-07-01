@@ -1,4 +1,4 @@
-﻿using ClientApp.UnitTests.Mocks;
+using ClientApp.UnitTests.Mocks;
 
 namespace ClientApp.UnitTests.Services;
 
@@ -27,6 +27,6 @@ public class OrdersServiceTests
         var ordersMockService = new OrderMockService();
         var result = await ordersMockService.GetOrdersAsync();
 
-        Assert.AreNotEqual(0, result.Count());
+        Assert.IsNotEmpty(result);
     }
 }

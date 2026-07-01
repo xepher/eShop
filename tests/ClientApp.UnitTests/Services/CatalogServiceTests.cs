@@ -1,4 +1,4 @@
-﻿namespace ClientApp.UnitTests.Services;
+namespace ClientApp.UnitTests.Services;
 
 [TestClass]
 public class CatalogServiceTests
@@ -9,7 +9,7 @@ public class CatalogServiceTests
         var catalogMockService = new CatalogMockService();
         var catalog = await catalogMockService.GetCatalogAsync();
 
-        Assert.AreNotEqual(0, catalog.Count());
+        Assert.IsNotEmpty(catalog);
     }
 
     [TestMethod]
@@ -18,7 +18,7 @@ public class CatalogServiceTests
         var catalogMockService = new CatalogMockService();
         var catalogBrand = await catalogMockService.GetCatalogBrandAsync();
 
-        Assert.AreNotEqual(0, catalogBrand.Count());
+        Assert.IsNotEmpty(catalogBrand);
     }
 
     [TestMethod]
@@ -27,6 +27,6 @@ public class CatalogServiceTests
         var catalogMockService = new CatalogMockService();
         var catalogType = await catalogMockService.GetCatalogTypeAsync();
 
-        Assert.AreNotEqual(0, catalogType.Count());
+        Assert.IsNotEmpty(catalogType);
     }
 }

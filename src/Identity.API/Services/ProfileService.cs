@@ -1,4 +1,4 @@
-﻿namespace eShop.Identity.API.Services
+namespace eShop.Identity.API.Services
 {
     public class ProfileService : IProfileService
     {
@@ -9,7 +9,7 @@
             _userManager = userManager;
         }
 
-        public async Task GetProfileDataAsync(ProfileDataRequestContext context)
+        public async Task GetProfileDataAsync(ProfileDataRequestContext context, CancellationToken cancellationToken)
         {
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
 
@@ -23,7 +23,7 @@
             context.IssuedClaims = claims.ToList();
         }
 
-        public async Task IsActiveAsync(IsActiveContext context)
+        public async Task IsActiveAsync(IsActiveContext context, CancellationToken cancellationToken)
         {
             var subject = context.Subject ?? throw new ArgumentNullException(nameof(context.Subject));
 

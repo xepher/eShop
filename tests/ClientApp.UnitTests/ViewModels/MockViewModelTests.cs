@@ -1,4 +1,4 @@
-﻿using ClientApp.UnitTests.Mocks;
+using ClientApp.UnitTests.Mocks;
 
 namespace ClientApp.UnitTests.ViewModels;
 
@@ -24,8 +24,8 @@ public class MockViewModelTests
         Assert.IsNull(mockViewModel.Surname.Value);
         Assert.IsFalse(mockViewModel.Forename.IsValid);
         Assert.IsFalse(mockViewModel.Surname.IsValid);
-        Assert.AreNotEqual(0, mockViewModel.Forename.Errors.Count());
-        Assert.AreNotEqual(0, mockViewModel.Surname.Errors.Count());
+        Assert.IsNotEmpty(mockViewModel.Forename.Errors);
+        Assert.IsNotEmpty(mockViewModel.Surname.Errors);
     }
 
     [TestMethod]
@@ -41,8 +41,8 @@ public class MockViewModelTests
         Assert.IsNull(mockViewModel.Surname.Value);
         Assert.IsTrue(mockViewModel.Forename.IsValid);
         Assert.IsFalse(mockViewModel.Surname.IsValid);
-        Assert.AreEqual(0, mockViewModel.Forename.Errors.Count());
-        Assert.AreNotEqual(0, mockViewModel.Surname.Errors.Count());
+        Assert.IsEmpty(mockViewModel.Forename.Errors);
+        Assert.IsNotEmpty(mockViewModel.Surname.Errors);
     }
 
     [TestMethod]
@@ -58,8 +58,8 @@ public class MockViewModelTests
         Assert.IsNotNull(mockViewModel.Surname.Value);
         Assert.IsFalse(mockViewModel.Forename.IsValid);
         Assert.IsTrue(mockViewModel.Surname.IsValid);
-        Assert.AreNotEqual(0, mockViewModel.Forename.Errors.Count());
-        Assert.AreEqual(0, mockViewModel.Surname.Errors.Count());
+        Assert.IsNotEmpty(mockViewModel.Forename.Errors);
+        Assert.IsEmpty(mockViewModel.Surname.Errors);
     }
 
     [TestMethod]
@@ -76,8 +76,8 @@ public class MockViewModelTests
         Assert.IsNotNull(mockViewModel.Surname.Value);
         Assert.IsTrue(mockViewModel.Forename.IsValid);
         Assert.IsTrue(mockViewModel.Surname.IsValid);
-        Assert.AreEqual(0, mockViewModel.Forename.Errors.Count());
-        Assert.AreEqual(0, mockViewModel.Surname.Errors.Count());
+        Assert.IsEmpty(mockViewModel.Forename.Errors);
+        Assert.IsEmpty(mockViewModel.Surname.Errors);
     }
 
     [TestMethod]
