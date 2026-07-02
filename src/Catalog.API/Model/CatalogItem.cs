@@ -4,43 +4,79 @@ using Pgvector;
 
 namespace eShop.Catalog.API.Model;
 
+/// <summary>
+/// 商品目录条目（商品实体模型）
+/// 包含基本信息、库存阈值、以及用于语义检索的 Embedding 向量。
+/// </summary>
 public class CatalogItem
 {
     public int Id { get; set; }
 
+    /// <summary>
+    /// 商品名称
+    /// </summary>
     [Required]
     public string Name { get; set; }
 
+    /// <summary>
+    /// 商品描述信息
+    /// </summary>
     public string? Description { get; set; }
 
+    /// <summary>
+    /// 商品单价
+    /// </summary>
     public decimal Price { get; set; }
 
+    /// <summary>
+    /// 商品图片的文件名（例如 1.webp）
+    /// </summary>
     public string? PictureFileName { get; set; }
 
+    /// <summary>
+    /// 商品分类 ID
+    /// </summary>
     public int CatalogTypeId { get; set; }
 
+    /// <summary>
+    /// 商品分类关联导航属性
+    /// </summary>
     public CatalogType? CatalogType { get; set; }
 
+    /// <summary>
+    /// 商品品牌 ID
+    /// </summary>
     public int CatalogBrandId { get; set; }
 
+    /// <summary>
+    /// 商品品牌关联导航属性
+    /// </summary>
     public CatalogBrand? CatalogBrand { get; set; }
 
-    // Quantity in stock
+    /// <summary>
+    /// 现存可用库存数量 (Quantity in stock)
+    /// </summary>
     public int AvailableStock { get; set; }
 
-    // Available stock at which we should reorder
+    /// <summary>
+    /// 补货阈值 (RestockThreshold)：当库存降至此值时，应当发起补货流程
+    /// </summary>
     public int RestockThreshold { get; set; }
 
-
-    // Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
+    /// <summary>
+    /// 最大库存上限 (MaxStockThreshold)：受仓库物理/物流条件制约，最大可入库的数量
+    /// </summary>
     public int MaxStockThreshold { get; set; }
 
-    /// <summary>Optional embedding for the catalog item's description.</summary>
+    /// <summary>
+    /// AI 语义检索所需的商品描述向量嵌入 (Embedding Vector)。
+    /// 标记为 [JsonIgnore]，避免该长向量浮点数组泄露到对外公开的 RESTful API 中。
+    /// </summary>
     [JsonIgnore]
     public Vector? Embedding { get; set; }
 
     /// <summary>
-    /// True if item is on reorder
+    /// 标识商品当前是否处于“补货处理中”的状态
     /// </summary>
     public bool OnReorder { get; set; }
 
@@ -48,17 +84,11 @@ public class CatalogItem
 
 
     /// <summary>
-    /// Decrements the quantity of a particular item in inventory and ensures the restockThreshold hasn't
-    /// been breached. If so, a RestockRequest is generated in CheckThreshold. 
-    /// 
-    /// If there is sufficient stock of an item, then the integer returned at the end of this call should be the same as quantityDesired. 
-    /// In the event that there is not sufficient stock available, the method will remove whatever stock is available and return that quantity to the client.
-    /// In this case, it is the responsibility of the client to determine if the amount that is returned is the same as quantityDesired.
-    /// It is invalid to pass in a negative number. 
+    /// 扣减商品库存。
+    /// 扣减成功后会返回实际移出的数量，以支持库存不足时的部分出库机制。
     /// </summary>
-    /// <param name="quantityDesired"></param>
-    /// <returns>int: Returns the number actually removed from stock. </returns>
-    /// 
+    /// <param name="quantityDesired">期望扣减的库存数量</param>
+    /// <returns>实际完成扣减的库存数量</returns>
     public int RemoveStock(int quantityDesired)
     {
         if (AvailableStock == 0)
@@ -79,19 +109,19 @@ public class CatalogItem
     }
 
     /// <summary>
-    /// Increments the quantity of a particular item in inventory.
-    /// <param name="quantity"></param>
-    /// <returns>int: Returns the quantity that has been added to stock</returns>
+    /// 增加商品库存（入库）。
+    /// 如果入库后数量超过最大库存阈值，则自动进行截断，仅增加到最大阈值。
     /// </summary>
+    /// <param name="quantity">入库数量</param>
+    /// <returns>实际被成功添加的库存数量</returns>
     public int AddStock(int quantity)
     {
         int original = this.AvailableStock;
 
-        // The quantity that the client is trying to add to stock is greater than what can be physically accommodated in the Warehouse
+        // 如果入库后总库存会超过限制的最大库存阈值
         if ((this.AvailableStock + quantity) > this.MaxStockThreshold)
         {
-            // For now, this method only adds new units up maximum stock threshold. In an expanded version of this application, we
-            //could include tracking for the remaining units and store information about overstock elsewhere. 
+            // 截断到最大限制
             this.AvailableStock += (this.MaxStockThreshold - this.AvailableStock);
         }
         else
@@ -99,6 +129,7 @@ public class CatalogItem
             this.AvailableStock += quantity;
         }
 
+        // 成功补货，重置补货中状态为 false
         this.OnReorder = false;
 
         return this.AvailableStock - original;
