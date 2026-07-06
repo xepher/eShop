@@ -1,8 +1,16 @@
-﻿namespace eShop.Identity.API.Configuration
+namespace eShop.Identity.API.Configuration
 {
+    /// <summary>
+    /// IdentityServer 配置数据类。
+    /// 定义了系统的 API 资源、API 范围、身份资源以及授权客户端配置。
+    /// </summary>
     public class Config
     {
         // ApiResources define the apis in your system
+        /// <summary>
+        /// 获取系统中定义的 API 资源（ApiResource）。
+        /// API 资源代表物理上的微服务。
+        /// </summary>
         public static IEnumerable<ApiResource> GetApis()
         {
             return new List<ApiResource>
@@ -15,6 +23,10 @@
 
         // ApiScope is used to protect the API 
         //The effect is the same as that of API resources in IdentityServer 3.x
+        /// <summary>
+        /// 获取系统中定义的 API 范围（ApiScope）。
+        /// 客户端请求这些范围以获得对应 API 的访问权限。
+        /// </summary>
         public static IEnumerable<ApiScope> GetApiScopes()
         {
             return new List<ApiScope>
@@ -27,6 +39,10 @@
 
         // Identity resources are data like user ID, name, or email address of a user
         // see: http://docs.identityserver.io/en/release/configuration/resources.html
+        /// <summary>
+        /// 获取身份资源。
+        /// 身份资源包含用户 ID、用户名或电子邮件等身份声明（Claims）。
+        /// </summary>
         public static IEnumerable<IdentityResource> GetResources()
         {
             return new List<IdentityResource>
@@ -37,10 +53,15 @@
         }
 
         // client want to access resources (aka scopes)
+        /// <summary>
+        /// 根据配置获取所有允许访问 IdentityServer 的客户端（Client）列表。
+        /// </summary>
+        /// <param name="configuration">应用程序配置对象，用于获取客户端的重定向 URI 等信息。</param>
         public static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
             return new List<Client>
             {
+                // MAUI 移动客户端（使用授权码 + PKCE 模式）
                 new Client
                 {
                     ClientId = "maui",
@@ -60,7 +81,7 @@
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        IdentityServerConstants.StandardScopes.OfflineAccess, // 支持刷新令牌
                         "orders",
                         "basket",
                         "mobileshoppingagg",
@@ -73,6 +94,7 @@
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
+                // WebApp 客户端（使用授权码模式）
                 new Client
                 {
                     ClientId = "webapp",
@@ -109,6 +131,7 @@
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
+                // Webhooks 客户端（使用授权码模式）
                 new Client
                 {
                     ClientId = "webhooksclient",
@@ -141,6 +164,7 @@
                     AccessTokenLifetime = 60*60*2, // 2 hours
                     IdentityTokenLifetime= 60*60*2 // 2 hours
                 },
+                // Basket API Swagger UI 客户端（使用简化模式 Implicit 登录测试）
                 new Client
                 {
                     ClientId = "basketswaggerui",
@@ -156,6 +180,7 @@
                         "basket"
                     }
                 },
+                // Ordering API Swagger UI 客户端
                 new Client
                 {
                     ClientId = "orderingswaggerui",
@@ -171,6 +196,7 @@
                         "orders"
                     }
                 },
+                // Webhooks API Swagger UI 客户端
                 new Client
                 {
                     ClientId = "webhooksswaggerui",
@@ -190,3 +216,4 @@
         }
     }
 }
+

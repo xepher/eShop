@@ -1,14 +1,24 @@
-﻿
+
 namespace eShop.Identity.API;
 
+/// <summary>
+/// 数据库种子数据播种器，用于在数据库初始化或迁移时自动填充默认测试用户（alice 和 bob）。
+/// </summary>
 public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> userManager) : IDbSeeder<ApplicationDbContext>
 {
+    /// <summary>
+    /// 异步播种种子数据。
+    /// </summary>
+    /// <param name="context">Identity 数据库上下文。</param>
+    /// <returns>表示异步操作的任务 Task。</returns>
     public async Task SeedAsync(ApplicationDbContext context)
     {
+        // 尝试查找默认用户 "alice"
         var alice = await userManager.FindByNameAsync("alice");
 
         if (alice == null)
         {
+            // 构造默认测试用户 alice 的各项属性（包含模拟信用卡和送货地址信息）
             alice = new ApplicationUser
             {
                 UserName = "alice",
@@ -30,6 +40,7 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
                 SecurityNumber = "123"
             };
 
+            // 创建用户并设置默认密码 "Pass123$"
             var result = await userManager.CreateAsync(alice, "Pass123$");
 
             if (!result.Succeeded)
@@ -50,10 +61,12 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
             }
         }
 
+        // 尝试查找默认用户 "bob"
         var bob = await userManager.FindByNameAsync("bob");
 
         if (bob == null)
         {
+            // 构造默认测试用户 bob 的各项属性
             bob = new ApplicationUser
             {
                 UserName = "bob",
@@ -75,6 +88,7 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
                 SecurityNumber = "456"
             };
 
+            // 创建用户并设置默认密码 "Pass123$"
             var result = await userManager.CreateAsync(bob, "Pass123$");
 
             if (!result.Succeeded)
@@ -96,3 +110,4 @@ public class UsersSeed(ILogger<UsersSeed> logger, UserManager<ApplicationUser> u
         }
     }
 }
+
