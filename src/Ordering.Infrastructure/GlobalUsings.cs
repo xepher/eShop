@@ -1,4 +1,6 @@
-﻿global using System.Data;
+// 全局命名空间引用定义，简化整个基础设施层项目的命名空间导入。
+
+global using System.Data;
 global using MediatR;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Design;
