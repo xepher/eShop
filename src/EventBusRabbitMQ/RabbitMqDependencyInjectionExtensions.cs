@@ -1,4 +1,4 @@
-using eShop.EventBusRabbitMQ;
+﻿using eShop.EventBusRabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.Hosting;
@@ -49,9 +49,11 @@ public static class RabbitMqDependencyInjectionExtensions
         // 注册遥测辅助服务和具体的事件总线实现类
         builder.Services.AddSingleton<RabbitMQTelemetry>();
         builder.Services.AddSingleton<IEventBus, RabbitMQEventBus>();
-        
+
         // Start consuming messages as soon as the application starts
         // 将 RabbitMQEventBus 同时注册为后台托管服务（IHostedService），以便在应用程序启动时自动开始消费消息
+        // 这里使用IHostedService而不是BackgroundService的原因是RabbitMQEventBus承担了发布与消费的双重职责
+        // 此处用同一个RabbitMQEventBus实例来注册IEventBus与IHostedService的实现, 避免创建两个相同的实例
         builder.Services.AddSingleton<IHostedService>(sp => (RabbitMQEventBus)sp.GetRequiredService<IEventBus>());
 
         return new EventBusBuilder(builder.Services);
